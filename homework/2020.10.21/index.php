@@ -21,7 +21,12 @@ $list = createContentHtmlList($content);
     </head>
     <body>
         <div id="content">
-            <h4>Доступні для перегляду директорії та файли</h4>
+            <h4>Перелік директорій та файлів</h4>
+            <div>
+                <button class="btn btn-secondary btn-sm" onclick="showHideContentTree(this)">Згорнути</button>
+                <button class="btn btn-secondary btn-sm" id="clear-content"
+                        style="display: none;" onclick="clearContent()">Очистити контент</button>
+            </div>
             <?= $list ?>
         </div>
         <div id="response_div"></div>

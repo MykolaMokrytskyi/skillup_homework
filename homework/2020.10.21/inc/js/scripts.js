@@ -1,4 +1,11 @@
 function showHideContentTree(elem) {
+    Array.from(document.getElementsByClassName('visible')).forEach(function(item) {
+        item.style.display = (elem.innerHTML === 'Згорнути') ? 'none' : 'block';
+    });
+    elem.innerHTML = (elem.innerHTML === 'Згорнути') ? 'Відобразити' : 'Згорнути';
+}
+
+function showHideContentSubTree(elem) {
     let element = elem.parentElement.nextSibling;
     element.style.display = (element.style.display === 'block') ? 'none' : 'block';
 }
@@ -11,6 +18,7 @@ function getContent(contentPath, contentMimeTypeGroup) {
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
             document.getElementById('response_div').innerHTML = xmlHttp.responseText;
+            document.getElementById('clear-content').style.display = 'inline-block';
         }
     }
     xmlHttp.open('post', 'get-content.php');
@@ -36,4 +44,9 @@ function processItem(newDirPath, itemType, operationType) {
             xmlHttp.send(requestData);
         }
     }
+}
+
+function clearContent() {
+    document.getElementById('response_div').innerHTML = '';
+    document.getElementById('clear-content').style.display = 'none';
 }
