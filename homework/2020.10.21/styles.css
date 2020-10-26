@@ -16,25 +16,28 @@ body {
     grid-row: 2/span 1;
 }
 li {
-     padding: 7px 0px 7px 0px;
-}
-span > img {
-    margin: 7px 0px 7px 0px;
+     padding: 5px 0px 5px 0px;
 }
 ul {
     list-style: none;
     margin: 0px;
     padding: 0px;
 }
+span > span, li > a > span {
+    margin-right: 7px;
+}
+a {
+    color: rgb(245, 74, 12);
+}
+a:hover {
+    text-decoration: none;
+    color: rgb(179, 53, 7);
+}
+a > span {
+    color: black;
+}
 ul div, ul div ul > li {
     margin-left: 25px;
-}
-span > img, a > img {
-    margin-right: 10px;
-    height: 17px;
-}
-span > a > img {
-    margin: 0px 0px 0px 10px;
 }
 #response_div {
     margin-top: 50px;

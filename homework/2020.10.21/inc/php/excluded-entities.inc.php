@@ -7,4 +7,5 @@ return [
     '..',
     'styles.css',
     'get-content.php',
+    'process-item.php',
 ];

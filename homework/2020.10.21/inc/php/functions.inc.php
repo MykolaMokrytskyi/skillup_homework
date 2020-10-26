@@ -36,21 +36,24 @@ function getMimeTypeIcon(string $mimeContentGroup = 'directory'): string
 {
     switch ($mimeContentGroup) {
         case 'directory':
-            $iconPath = 'inc/img/directory.png';
+            $icon = '&#128194;';
             break;
-        case 'newDirectory':
-            $iconPath = 'inc/img/new_dir.png';
+        case 'newItem':
+            $icon = '&#65291;';
+            break;
+        case 'removeItem':
+            $icon = '&#65293;';
             break;
         case 'text':
-            $iconPath = 'inc/img/txt.png';
+            $icon = '&#128462;';
             break;
         case 'image':
-            $iconPath = 'inc/img/image.png';
+            $icon = '&#128443;';
             break;
         default:
-            $iconPath = '';
+            $icon = '';
     }
-    return $iconPath ? "<img src='{$iconPath}' alt='image'>" : '';
+    return $icon === '' ? '' : "<span>{$icon}</span>";
 }
 
 /**
@@ -65,11 +68,13 @@ function createContentHtmlList(array $contentArray, string $path = ''): string
     foreach ($contentArray as $contentKey => $contentValue) {
         if (is_array($contentValue)) {
             $icon = getMimeTypeIcon();
-            $newDirectory = getMimeTypeIcon('newDirectory');
+            $newItem = getMimeTypeIcon('newItem');
+            $removeItem = getMimeTypeIcon('removeItem');
             $htmlList .= ($path === '') ? '' : '<div>';
             $htmlList .= <<<HTML
 <span>{$icon}{$contentKey}
-    <a href="#" onclick="addNewItem('{$path}{$contentKey}', 'directory')">{$newDirectory}</a>
+    <a href="#" onclick="processItem('{$path}{$contentKey}', 'directory', 'add')">{$newItem}</a>
+    <a href="#" onclick="processItem('{$path}{$contentKey}', 'directory', 'remove')">{$removeItem}</a>
 </span>
 HTML;
             $htmlList .= createContentHtmlList($contentValue, "{$path}{$contentKey}/");
@@ -89,7 +94,7 @@ HTML;
 }
 
 /**
- * Фукнція для виведення інформації про помилку при отриманні контенту
+ * Функція для виведення інформації про помилку при отриманні контенту
  * @param string $errorInfo - інформація про помилку, яку буде виведено користувачу
  * @param bool $terminate - змінна, яка вказує, чи буде продовжено виконання сценарію
  */
