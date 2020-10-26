@@ -1,3 +1,8 @@
+function showHideContentTree(elem) {
+    let element = elem.parentElement.nextSibling;
+    element.style.display = (element.style.display === 'block') ? 'none' : 'block';
+}
+
 function getContent(contentPath, contentMimeTypeGroup) {
     let xmlHttp = new XMLHttpRequest();
     let requestData = new FormData();

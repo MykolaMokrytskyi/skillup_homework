@@ -36,24 +36,24 @@ function getMimeTypeIcon(string $mimeContentGroup = 'directory'): string
 {
     switch ($mimeContentGroup) {
         case 'directory':
-            $icon = '&#128194;';
+            $icon = '<span onclick="showHideContentTree(this)">&#128194;</span>';
             break;
         case 'newItem':
-            $icon = '&#65291;';
+            $icon = '<span>&#65291;</span>';
             break;
         case 'removeItem':
-            $icon = '&#65293;';
+            $icon = '<span>&#65293;</span>';
             break;
         case 'text':
-            $icon = '&#128462;';
+            $icon = '<span>&#128462;</span>';
             break;
         case 'image':
-            $icon = '&#128443;';
+            $icon = '<span>&#128443;</span>';
             break;
         default:
             $icon = '';
     }
-    return $icon === '' ? '' : "<span>{$icon}</span>";
+    return $icon;
 }
 
 /**
@@ -64,7 +64,8 @@ function getMimeTypeIcon(string $mimeContentGroup = 'directory'): string
  */
 function createContentHtmlList(array $contentArray, string $path = ''): string
 {
-    $htmlList = '<ul>';
+    $display = ($path === '') ? '' : ' style="display: none;"';
+    $htmlList = "<ul{$display}>";
     foreach ($contentArray as $contentKey => $contentValue) {
         if (is_array($contentValue)) {
             $icon = getMimeTypeIcon();

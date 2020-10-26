@@ -26,6 +26,9 @@ ul {
 span > span, li > a > span {
     margin-right: 7px;
 }
+span > a > span {
+    font-weight: 600;
+}
 a {
     color: rgb(245, 74, 12);
 }
@@ -44,4 +47,7 @@ ul div, ul div ul > li {
 }
 #response_div > img {
     max-height: 300px;
+}
+ul > span > span:hover, div > span > span:hover {
+    cursor: pointer;
 }
