@@ -130,7 +130,7 @@ function addFile(parentDirectoryPath, element) {
         modal.remove();
     });
     document.getElementById('load-file').addEventListener('click', function() {
-        loadFile(parentDirectoryPath, element)
+        loadFile(parentDirectoryPath, element);
     });
 }
 
