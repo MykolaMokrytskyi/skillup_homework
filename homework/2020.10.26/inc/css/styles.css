@@ -81,7 +81,7 @@ li, .dir-name {
     justify-content: center;
     align-items: center;
     border: none;
-    background-color: rgba(237, 237, 237) !important;
+    background-color: rgb(237, 237, 237) !important;
 }
 .modal-content button {
     width: max-content;
