@@ -122,6 +122,7 @@ function addFile(parentDirectoryPath, element) {
     modal.classList.add('modal');
     document.body.prepend(modal);
     modal.innerHTML = '<div class="modal-content">' +
+                            '<span class="warning">Notice: file\'s size can\'t be greater than 5 MB</span>' +
                             '<form method="post" enctype="multipart/form-data">' +
                                 '<input name="attachment" type="file" id="file-form">' +
                             '</form>' +
@@ -169,13 +170,12 @@ function loadFile(parentDirectoryPath, element) {
  * @param entityPath - path to entity that will be removed
  */
 function removeFile(element, entityPath) {
-    element.previousElementSibling.remove();
-    element.remove();
     let xmlHttp = new XMLHttpRequest(), requestData = new FormData();
     requestData.append('entityPath', entityPath);
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-            console.log(xmlHttp.responseText);
+            element.previousElementSibling.remove();
+            element.remove();
         }
     }
     xmlHttp.open('post', 'inc/php/delete-file.inc.php');
