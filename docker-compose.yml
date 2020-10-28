@@ -15,11 +15,11 @@ services:
       - ./docker/nginx/skillup.local.conf:/etc/nginx/conf.d/skillup.local.conf
     depends_on:
       - app
-  mysql:
-    image: mysql:8
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./docker/mysql:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root_pwd
+#  mysql:
+#    image: mysql:8
+#    ports:
+#      - "3306:3306"
+#    volumes:
+#      - ./docker/mysql:/var/lib/mysql
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root_pwd
