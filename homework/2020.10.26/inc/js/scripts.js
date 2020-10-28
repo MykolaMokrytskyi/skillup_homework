@@ -72,7 +72,13 @@ function addRemoveEntity(operationType, parentDirectoryPath, element) {
     }
     if (chosenMode) {
         let entityName = prompt('Enter directory name (letters and numbers only)');
-        addRemoveDirectory(operationType, parentDirectoryPath, entityName, element);
+        const regexp = /^[A-Z\s0-9]+$/i;
+        const matches = entityName.match(regexp);
+        if (matches === null) {
+            window.alert('Invalid name! Letters and numbers only...');
+        } else {
+            addRemoveDirectory(operationType, parentDirectoryPath, entityName, element);
+        }
     } else {
         if (operationType === 'add') {
             addFile(parentDirectoryPath, element);

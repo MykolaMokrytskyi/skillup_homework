@@ -12,7 +12,8 @@ if (!isset($_POST['parentDirectoryPath']) || empty($_POST['parentDirectoryPath']
 }
 
 if (!isset($_POST['newDirectoryName']) || empty($_POST['newDirectoryName'])
-    || !preg_match('/^[A-Z\s0-9]+$/i', $_POST['newDirectoryName'])) {
+    || !preg_match('/^[A-Z\s0-9]+$/i', $_POST['newDirectoryName'])
+    || preg_match('/^[\s]+$/', $_POST['newDirectoryName'])) {
     exit();
 }
 
