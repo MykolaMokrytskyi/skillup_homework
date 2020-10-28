@@ -124,7 +124,8 @@ function addFile(parentDirectoryPath, element) {
     modal.innerHTML = '<div class="modal-content">' +
                             '<span class="warning">Notice: file\'s size can\'t be greater than 5 MB</span>' +
                             '<form method="post" enctype="multipart/form-data">' +
-                                '<input name="attachment" type="file" id="file-form">' +
+                                '<input name="attachment[]" ' +
+                                        'type="file" id="file-form" multiple="multiple">' +
                             '</form>' +
                             '<div>' +
                                 '<button class="btn btn-secondary btn-sm" id="load-file">' +

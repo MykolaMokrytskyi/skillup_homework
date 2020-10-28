@@ -95,3 +95,21 @@ HTML;
     $htmlList .= "</{$wrapper}>";
     return $htmlList;
 }
+
+/**
+ * Rebuilds array (php.net function)
+ * @param $filePost - array to be rebuilt
+ * @return array - rebuilt array
+ */
+function reArrayFiles(array $filePost): array
+{
+    $fileArray = [];
+    $fileCount = count($filePost['name']);
+    $fileKeys = array_keys($filePost);
+    for ($i = 0; $i < $fileCount; $i++) {
+        foreach ($fileKeys as $key) {
+            $fileArray[$i][$key] = $filePost[$key][$i];
+        }
+    }
+    return $fileArray;
+}
