@@ -87,6 +87,7 @@ function htmlListByLevel(array $contentNames, string $path = '', int $level = 0,
             $htmlList .= <<<HTML
 <div>
     <li onclick="getContent('{$path}/{$name}')">{$icon}{$name}</li>
+    <!--span class="rename-file" title="rename file">&#9999;</span-->
     <span class="remove-file" title="remove file" onclick="removeFile(this, '{$path}/{$name}')">&minus;</span>
 </div>
 HTML;
@@ -112,4 +113,31 @@ function reArrayFiles(array $filePost): array
         }
     }
     return $fileArray;
+}
+
+/**
+ * Redirects user to another page
+ * @param string $location - new address
+ * @param bool $terminate - true/false: if true - PHP-script will be stopped immediately
+ */
+function changeLocation(string $location, bool $terminate = true): void
+{
+    header("Location: {$location}");
+    if ($terminate) {
+        exit();
+    }
+}
+
+/**
+ * @param int $code - HTTP response status code
+ * @param string $errorMessage - error description
+ * @param bool $terminate - true/false: if true - PHP-script will be stopped immediately
+ */
+function operationFailed(int $code, string $errorMessage = '', $terminate = true): void
+{
+    http_response_code($code);
+    echo $errorMessage;
+    if ($terminate) {
+        exit();
+    }
 }

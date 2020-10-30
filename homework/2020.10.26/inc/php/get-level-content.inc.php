@@ -3,14 +3,20 @@
 declare(strict_types=1);
 error_reporting(E_ALL);
 
-require(__DIR__ . '/functions.inc.php');
+session_start();
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['username'])) {
     exit();
 }
 
+require(__DIR__ . '/functions.inc.php');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    exit('<span class="warning">access method isn\'t allowed</span>');
+}
+
 if (!isset($_POST['contentPath']) || empty($_POST['contentPath']) || !is_file($_POST['contentPath'])) {
-    exit();
+    exit('<span class="warning">Something wrong with content...</span>');
 }
 
 $contentPath = $_POST['contentPath'];
@@ -35,4 +41,11 @@ if ($mimeTypeGroup === 'text') {
     exit();
 }
 
-echo '<span class="warning">This file\'s mime type isn\'t allowed...</span>';
+$path = dirname($_SERVER['SCRIPT_NAME']);
+
+echo <<<HTML
+<div>
+    <span class="warning">This file's mime type isn't allowed...you can try to 
+        <a href="{$path}/download-file.inc.php?rout={$contentPath}" target="_blank">download</a> it.</span>
+</div>
+HTML;

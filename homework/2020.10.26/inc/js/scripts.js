@@ -35,16 +35,8 @@ function getContent(contentPath) {
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             let responseDiv = document.getElementById('response-div');
-            responseDiv.innerHTML = '';
-            let responseContent = document.createElement('div');
-            responseContent.classList.add('response-content');
-            responseDiv.prepend(responseContent);
-            responseDiv.getElementsByClassName('response-content')[0].innerHTML = xmlHttp.responseText;
-            let btn = document.createElement('button');
-            btn.innerHTML = 'Clear content';
-            btn.classList.add('btn', 'btn-secondary', 'btn-sm');
-            btn.addEventListener('click', clearContent);
-            responseDiv.prepend(btn);
+            responseDiv.innerHTML = xmlHttp.responseText;
+            addClearContentButton();
         }
     }
     xmlHttp.open('post', 'inc/php/get-level-content.inc.php');
@@ -54,8 +46,9 @@ function getContent(contentPath) {
 /**
  * Clears html-tag with ajax-response data
  */
-function clearContent() {
+function clearContent(elem) {
     document.getElementById('response-div').innerHTML = '';
+    elem.remove();
 }
 
 /**
@@ -102,10 +95,10 @@ function addRemoveDirectory(operationType, parentDirectoryPath, directoryName, e
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             let childrenQuantity = element.parentElement.children.length;
             if (element.parentElement.children[childrenQuantity - 1].className === 'dir-content') {
-                [0, 1].forEach(function() {
-                    element.parentElement.children[0].click();
-                });
+                reloadContent(element);
             }
+        } else if (xmlHttp.readyState === 4 && xmlHttp.status === 302) {
+            ajaxErrorHandler(xmlHttp);
         }
     }
     xmlHttp.open('post', 'inc/php/create-delete-directory.inc.php');
@@ -155,9 +148,9 @@ function loadFile(parentDirectoryPath, element) {
             document.getElementsByClassName('modal')[0].remove();
             let childrenQuantity = element.parentElement.children.length;
             if (element.parentElement.children[childrenQuantity - 1].className === 'dir-content') {
-                [0, 1].forEach(function() {
-                    element.parentElement.children[0].click();
-                });
+                reloadContent(element);
+            } else if (xmlHttp.readyState === 4 && xmlHttp.status === 302) {
+                ajaxErrorHandler(xmlHttp);
             }
         }
     }
@@ -177,8 +170,168 @@ function removeFile(element, entityPath) {
         if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
             element.previousElementSibling.remove();
             element.remove();
+        } else if (xmlHttp.readyState === 4 && xmlHttp.status === 302) {
+            ajaxErrorHandler(xmlHttp);
         }
     }
     xmlHttp.open('post', 'inc/php/delete-file.inc.php');
     xmlHttp.send(requestData);
+}
+
+/**
+ * Asynchronous session deleting
+ */
+function userLogout() {
+    let xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            document.location.reload();
+        }
+    }
+    xmlHttp.open('post', 'inc/php/user-log-out.inc.php');
+    xmlHttp.send();
+}
+
+/**
+ * Displays error message to user
+ */
+function ajaxErrorHandler(ajaxObject) {
+    window.alert(ajaxObject.responseText);
+}
+
+/**
+ * Reloads subdirectory information
+ * @param element - event element
+ */
+function reloadContent(element) {
+    [0, 1].forEach(function() {
+        element.parentElement.children[0].click();
+    });
+}
+
+/**
+ * Adds button to navbar
+ */
+function addClearContentButton() {
+    let btn = document.getElementById('clear-content');
+    if (btn) {
+        return;
+    }
+    btn = document.createElement('button');
+    btn.innerHTML = 'CLEAR CONTENT';
+    btn.id = 'clear-content';
+    btn.classList.add('btn', 'btn-secondary', 'btn-sm');
+    btn.addEventListener('click', function() {
+        clearContent(this);
+    });
+    document.getElementById('nav').append(btn);
+}
+
+/**
+ * Takes json data and visualize within chart
+ */
+function showStatistic() {
+    let xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            let responseDiv = document.getElementById('response-div');
+            responseDiv.innerHTML = '';
+            let chartData = JSON.parse(xmlHttp.responseText),
+                statisticDatesArray = [],
+                uniqueUsers = [],
+                visitsAtAll = [],
+                uniqueUsersQuantity = 0,
+                visitsAtAllQuantity = 0;
+            for (let statisticDate in chartData) {
+                if (chartData.hasOwnProperty(statisticDate)) {
+                    uniqueUsersQuantity = 0; visitsAtAllQuantity = 0;
+                    statisticDatesArray.push(statisticDate);
+                    for (const statisticUsername in chartData[statisticDate]) {
+                        if (chartData[statisticDate].hasOwnProperty(statisticUsername)) {
+                            uniqueUsersQuantity++;
+                            visitsAtAllQuantity += chartData[statisticDate][statisticUsername];
+                        }
+                    }
+                    uniqueUsers.push(uniqueUsersQuantity);
+                    visitsAtAll.push(visitsAtAllQuantity);
+                }
+            }
+            let options = {
+                series: [
+                    {
+                        name: "VISITS AT ALL",
+                        data: visitsAtAll
+                    },
+                    {
+                        name: "UNIQUE VISITS",
+                        data: uniqueUsers
+                    }
+                ],
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    dropShadow: {
+                        enabled: true,
+                        color: '#000',
+                        top: 18,
+                        left: 7,
+                        blur: 10,
+                        opacity: 0.2
+                    },
+                    toolbar: {
+                        show: false
+                    },
+                },
+                colors: ['#77B6EA', '#545454'],
+                dataLabels: {
+                    enabled: true,
+                },
+                stroke: {
+                    curve: 'smooth'
+                },
+                title: {
+                    text: 'DETAIL VISITS STATISTIC',
+                    align: 'left'
+                },
+                grid: {
+                    borderColor: '#e7e7e7',
+                    row: {
+                        colors: ['#f3f3f3', 'transparent'],
+                        opacity: 0.5
+                    },
+                },
+                markers: {
+                    size: 1
+                },
+                xaxis: {
+                    categories: statisticDatesArray,
+                    title: {
+                        text: 'VISITS DATE'
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'VISITS QUANTITY'
+                    },
+                    min: 0,
+                    max: Math.max.apply(null, visitsAtAll) + 1
+                },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'right',
+                    floating: true,
+                    offsetY: -25,
+                    offsetX: -5
+                }
+            };
+            /*** @var ApexCharts */
+            let chart = new ApexCharts(responseDiv, options);
+
+            /*** @var render */
+            chart.render();
+            addClearContentButton();
+        }
+    }
+    xmlHttp.open('post', 'inc/php/show-statistic.inc.php');
+    xmlHttp.send();
 }

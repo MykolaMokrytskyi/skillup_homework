@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'baseDir' => str_replace('inc', '', dirname(__DIR__)),
+    'baseDir' => dirname(__DIR__, 2) . '/',
 ];
