@@ -11,10 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['username'])) {
 
 require(__DIR__ . '/functions.inc.php');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    exit('<span class="warning">access method isn\'t allowed</span>');
-}
-
 if (!isset($_POST['contentPath']) || empty($_POST['contentPath']) || !is_file($_POST['contentPath'])) {
     exit('<span class="warning">Something wrong with content...</span>');
 }
