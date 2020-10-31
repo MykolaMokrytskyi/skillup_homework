@@ -343,6 +343,13 @@ function showStatistic() {
     xmlHttp.send();
 }
 
+/**
+ * Allows to rename directory or file
+ * @param entityPath - path to entity to be renamed
+ * @param element - event element
+ * @param elementType - can be directory or file
+ * @param level - content tree level
+ */
 function updateItem(entityPath, element, elementType, level) {
     let xmlHttp = new XMLHttpRequest(), requestData = new FormData();
     requestData.append('entityPath', entityPath);
