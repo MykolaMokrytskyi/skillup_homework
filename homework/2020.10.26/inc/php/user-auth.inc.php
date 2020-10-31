@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || isset($_SESSION['username'])) {
 
 require_once(__DIR__ . '/functions.inc.php');
 
-$errorRedirect = 'Location: ../../?error';
+$errorRedirect = '../../?error';
 $usersBase = file_get_contents(__DIR__ . '/../json/users-base.json');
 
 try {
