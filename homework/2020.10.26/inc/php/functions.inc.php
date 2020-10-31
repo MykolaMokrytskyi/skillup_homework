@@ -15,9 +15,10 @@ function getMimeTypeGroup(string $mimeType): string
  * Returns html-tag that visually represents file's content
  * @param string $mimeType - mime type
  * @param string $currentPath - path to current entity
+ * @param integer $level - content tree level
  * @return string - final html-tag
  */
-function getMimeTypeIcon(string $mimeType = 'directory', string $currentPath = ''): string
+function getMimeTypeIcon(string $mimeType = 'directory', string $currentPath = '', int $level = 99999): string
 {
     $mimeTypeGroup = getMimeTypeGroup($mimeType);
     switch ($mimeTypeGroup) {
@@ -26,14 +27,26 @@ function getMimeTypeIcon(string $mimeType = 'directory', string $currentPath = '
             break;
         case 'addItem':
             $icon = <<<HTML
-<span class="icon add-item-icon" title="add new entity"
+<span class="icon add-item-icon" title="add new directory or file"
         onclick="addRemoveEntity('add', '{$currentPath}', this)">&plus;</span>
 HTML;
             break;
         case 'removeItem':
             $icon = <<<HTML
 <span class="icon remove-item-icon"
-        title="remove existing directory" onclick="addRemoveEntity('remove', '{$currentPath}', this)">&minus;</span>
+        title="remove subdirectory" onclick="addRemoveEntity('remove', '{$currentPath}', this)">&minus;</span>
+HTML;
+            break;
+        case 'updateDirectoryName':
+            $icon = <<<HTML
+<span class="rename-file" title="rename" 
+        onclick="updateItem('{$currentPath}', this, 'directory', '{$level}')">&#9999;</span>
+HTML;
+            break;
+        case 'updateFileName':
+            $icon = <<<HTML
+<span class="rename-file" title="rename" 
+        onclick="updateItem('{$currentPath}', this, 'file', '{$level}')">&#9999;</span>
 HTML;
             break;
         case 'image':
@@ -66,29 +79,54 @@ function arrayFilter(array $arrayToFilter, array $filterArray, bool $inArray = t
 /**
  * Creates html-list for chosen level of content tree
  * @param array $contentNames - entities' names array
+ * @param array $permissions - user's permissions to modify entity
  * @param string $path - directory where entities are placed
  * @param int $level - content tree level
  * @param string $wrapper - can be ul or ol
  * @return string - final html-list
  */
-function htmlListByLevel(array $contentNames, string $path = '', int $level = 0, string $wrapper = 'ul'): string
+function htmlListByLevel(array $contentNames,
+                         array $permissions = [],
+                         string $path = '',
+                         int $level = 0,
+                         string $wrapper = 'ul'): string
 {
     $contentNames = arrayFilter($contentNames, ['.', '..',], false);
     $htmlList = "<{$wrapper}>";
     foreach ($contentNames as $name) {
-        if (is_dir("{$path}/{$name}")) {
+        $entityPermissions = array_key_exists($name, $permissions) ? $permissions[$name] : false;
+        $entityPermissions = ($level > 0 && is_bool($entityPermissions))
+                                ? ['insert', 'update', 'delete'] : $entityPermissions;
+        $insert = in_array('insert', $entityPermissions, false);
+        $update = in_array('update', $entityPermissions, false);
+        $remove = in_array('delete', $entityPermissions, false);
+        $entityPath = "{$path}/{$name}";
+        if (is_dir($entityPath)) {
             $pattern = file_get_contents(__DIR__ . '/../tpl/dir-level.inc.tpl');
             $icon = getMimeTypeIcon();
-            $addEntity = getMimeTypeIcon('addItem', "{$path}/{$name}");
-            $removeEntity = getMimeTypeIcon('removeItem', "{$path}/{$name}");
-            $htmlList .= sprintf($pattern, "{$path}/{$name}", ++$level, $icon, $name, $addEntity, $removeEntity);
+            $addEntity = $insert ? getMimeTypeIcon('addItem', $entityPath) : '';
+            $updateEntity = $update ? getMimeTypeIcon('updateDirectoryName', $entityPath, $level) : '';
+            $removeEntity = $remove ? getMimeTypeIcon('removeItem', $entityPath) : '';
+            $htmlList .= sprintf($pattern,
+                                $entityPath,
+                                $level + 1,
+                                $icon,
+                                $name,
+                                $updateEntity,
+                                $addEntity,
+                                $removeEntity);
         } else {
-            $icon = getMimeTypeIcon(mime_content_type("{$path}/{$name}"));
+            $icon = getMimeTypeIcon(mime_content_type($entityPath));
+            $updateEntity = $update ? getMimeTypeIcon('updateFileName', $entityPath, $level) : '';
+            $removeEntity = <<<HTML
+<span class="remove-file" title="remove" onclick="removeFile(this, '{$entityPath}')">&minus;</span>
+HTML;
+            $removeEntity = $remove ? $removeEntity : '';
             $htmlList .= <<<HTML
 <div>
-    <li onclick="getContent('{$path}/{$name}')">{$icon}{$name}</li>
-    <!--span class="rename-file" title="rename file">&#9999;</span-->
-    <span class="remove-file" title="remove file" onclick="removeFile(this, '{$path}/{$name}')">&minus;</span>
+    <li onclick="getContent('{$entityPath}')">{$icon}{$name}</li>
+    {$updateEntity}
+    {$removeEntity}
 </div>
 HTML;
         }

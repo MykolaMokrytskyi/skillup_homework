@@ -11,7 +11,7 @@ $entitiesFilter = require(__DIR__ . '/inc/php/entities-filter.inc.php');
 $entitiesList = scandir(__DIR__);
 $allowedEntities = $entitiesFilter[$_SESSION['username']][0]['allowed'];
 $filterEntitiesList = $entitiesFilter[$_SESSION['username']][0]['entities'];
-$entitiesList = arrayFilter($entitiesList, $filterEntitiesList, $allowedEntities);
+$entitiesList = arrayFilter($entitiesList, array_keys($filterEntitiesList), $allowedEntities);
 
 $statistic = file_get_contents(__DIR__ . '/inc/json/statistic.json');
 
@@ -43,7 +43,7 @@ $statistic = $statistic[(string)date('d.m.Y')];
 </div>
 <div id="content">
     <h4>Content tree</h4>
-    <?= htmlListByLevel($entitiesList, __DIR__) ?>
+    <?= htmlListByLevel($entitiesList, $filterEntitiesList, __DIR__) ?>
 </div>
 <div id="statistic">
     <span>TODAY'S VISITS INFO: UNIQUE VISITORS - <?= count($statistic) ?>,

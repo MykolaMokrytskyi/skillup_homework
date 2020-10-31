@@ -15,10 +15,12 @@ $entitiesFilter = require(__DIR__ . '/entities-filter.inc.php');
 $entitiesList = scandir($_POST['levelPath']);
 $levelNumber = (int)$_POST['levelNumber'];
 
+$filterEntitiesList = [];
+
 if (array_key_exists($levelNumber, $entitiesFilter[$_SESSION['username']])) {
     $allowedEntities = $entitiesFilter[$_SESSION['username']][$levelNumber]['allowed'];
     $filterEntitiesList = $entitiesFilter[$_SESSION['username']][$levelNumber]['entities'];
-    $entitiesList = arrayFilter($entitiesList, $filterEntitiesList, $allowedEntities);
+    $entitiesList = arrayFilter($entitiesList, array_keys($filterEntitiesList), $allowedEntities);
 }
 
-echo htmlListByLevel($entitiesList, $_POST['levelPath'], $levelNumber);
+echo htmlListByLevel($entitiesList, $filterEntitiesList, $_POST['levelPath'], $levelNumber);

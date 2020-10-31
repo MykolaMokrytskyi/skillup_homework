@@ -105,11 +105,13 @@ li, .dir-name {
     z-index: 1;
     padding: 10px;
     background-color: rgb(255, 232, 194);
+    border-bottom: 1px solid rgba(191, 59, 10, 0.5);
 }
 #content {
     grid-row: 2/span 1;
     grid-column: 1/span 1;
     padding-left: 15px;
+    padding-right: 15px;
     width: max-content;
     overflow-y: auto;
 }
@@ -133,7 +135,7 @@ li, .dir-name {
     background-color: rgb(255, 232, 194);
     font-size: 14px;
     font-weight: bold;
-    color: rgb(191, 59, 10)
+    color: rgb(191, 59, 10);
 }
 #statistic {
     grid-row: 3/span 1;
@@ -143,6 +145,7 @@ li, .dir-name {
     bottom: 0;
     padding: 10px;
     background-color: rgb(255, 234, 199);
+    border-top: 1px solid rgba(191, 59, 10, 0.5);
 }
 #statistic > span {
     font-weight: bold;

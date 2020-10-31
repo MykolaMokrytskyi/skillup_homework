@@ -20,6 +20,7 @@ if (!isset($_POST['contentPath']) || empty($_POST['contentPath']) || !is_file($_
 }
 
 $contentPath = $_POST['contentPath'];
+$contentName = basename($_POST['contentPath']);
 $mimeTypeGroup = getMimeTypeGroup(mime_content_type($_POST['contentPath']));
 
 if ($mimeTypeGroup === 'image') {
@@ -45,7 +46,7 @@ $path = dirname($_SERVER['SCRIPT_NAME']);
 
 echo <<<HTML
 <div>
-    <span class="warning">This file's mime type isn't allowed...you can try to 
-        <a href="{$path}/download-file.inc.php?rout={$contentPath}" target="_blank">download</a> it.</span>
+    <span class="warning">This file's mime type isn't allowed...you can try to download 
+        <a href="{$path}/download-file.inc.php?rout={$contentPath}" target="_blank">{$contentName}</a>.</span>
 </div>
 HTML;

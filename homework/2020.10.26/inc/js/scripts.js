@@ -49,6 +49,9 @@ function getContent(contentPath) {
 function clearContent(elem) {
     document.getElementById('response-div').innerHTML = '';
     elem.remove();
+    if (document.getElementsByClassName('resize-triggers').length > 0) {
+        document.location.reload();
+    }
 }
 
 /**
@@ -65,7 +68,11 @@ function addRemoveEntity(operationType, parentDirectoryPath, element) {
     }
     if (chosenMode) {
         let entityName = prompt('Enter directory name (letters and numbers only)');
-        const regexp = /^[A-Z\s0-9]+$/i;
+        if (entityName === null) {
+            window.alert('Invalid name! Letters and numbers only...');
+            return;
+        }
+        const regexp = /^[A-Z\s0-9\-]+$/i;
         const matches = entityName.match(regexp);
         if (matches === null) {
             window.alert('Invalid name! Letters and numbers only...');
@@ -334,4 +341,38 @@ function showStatistic() {
     }
     xmlHttp.open('post', 'inc/php/show-statistic.inc.php');
     xmlHttp.send();
+}
+
+function updateItem(entityPath, element, elementType, level) {
+    let xmlHttp = new XMLHttpRequest(), requestData = new FormData();
+    requestData.append('entityPath', entityPath);
+    requestData.append('elementType', elementType);
+    requestData.append('level', level);
+    let entityName = prompt('Enter new name (letters and numbers only)');
+    if (entityName === null) {
+        window.alert('Invalid name! Letters and numbers only...');
+        return;
+    }
+    const regexp = /^[A-Z\s0-9\-]+$/i;
+    const matches = entityName.match(regexp);
+    if (matches === null) {
+        window.alert('Invalid name! Letters and numbers only...');
+        return;
+    } else {
+        requestData.append('entityName', entityName);
+    }
+    xmlHttp.onreadystatechange = function() {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            if (level === '0') {
+                document.location.reload();
+            } else {
+                let neededElement = element.parentElement.parentElement.parentElement.parentElement.children[0];
+                reloadContent(neededElement);
+            }
+        } else if (xmlHttp.readyState === 4 && xmlHttp.status === 302) {
+            ajaxErrorHandler(xmlHttp);
+        }
+    }
+    xmlHttp.open('post', 'inc/php/rename-entity.inc.php');
+    xmlHttp.send(requestData);
 }
