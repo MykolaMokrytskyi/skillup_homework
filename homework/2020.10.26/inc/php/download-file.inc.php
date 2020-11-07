@@ -5,8 +5,6 @@ error_reporting(E_ALL);
 
 require_once(__DIR__ . '/user-auth-check.inc.php');
 
-session_start();
-
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !isset($_SESSION['username'])) {
     exit();
 }
