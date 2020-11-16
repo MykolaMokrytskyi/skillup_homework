@@ -14,16 +14,16 @@ return [
           1 => 'update',
           2 => 'delete',
         ],
+        'readme.txt' => 
+        [
+          0 => 'update',
+          1 => 'delete',
+        ],
         'admin' => 
         [
           0 => 'insert',
           1 => 'update',
           2 => 'delete',
-        ],
-        'readme.txt' => 
-        [
-          0 => 'update',
-          1 => 'delete',
         ],
       ],
     ],
