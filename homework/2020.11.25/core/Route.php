@@ -106,12 +106,9 @@ final class Route
      */
     private function makeAction(): void
     {
+        $controllerClass = "app\\controllers\\{$this->controllerName}";
 
-        $controllerClassPath = __DIR__ . "/../controllers/{$this->controllerName}.php";
-
-        if (file_exists($controllerClassPath)) {
-            $controllerClass = "app\\controllers\\{$this->controllerName}";
-        } else {
+        if (!class_exists($controllerClass)) {
             $controllerClass = IndexController::class;
         }
 
