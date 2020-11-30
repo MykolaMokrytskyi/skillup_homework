@@ -10,7 +10,7 @@ use app\core\Route;
 
 $requestAddress = $_SERVER['REQUEST_URI'];
 
-if (preg_match('/(\/index.php)/i', $requestAddress)) {
+if (preg_match("/(\/index.php)/i", $requestAddress)) {
     $requestAddress = substr($requestAddress, strlen('/index.php'));
 }
 
